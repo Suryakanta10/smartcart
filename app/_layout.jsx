@@ -1,21 +1,13 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 
+import { queryClient, persistOptions } from '../src/api/queryClient';
 import HeaderActions from '../src/components/HeaderActions';
 import CartButton from '../src/components/CartButton';
 import { configureNotifications } from '../src/services/notifications';
 import { startCartReminderSync } from '../src/services/cartReminderSync';
 import { useNotificationObserver } from '../src/hooks/useNotificationObserver';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 2,
-      staleTime: 5 * 60 * 1000,
-    },
-  },
-});
 
 configureNotifications();
 
@@ -28,7 +20,7 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
       <Stack screenOptions={{ headerRight: () => <HeaderActions /> }}>
         <Stack.Screen name="index" options={{ title: 'SmartCart' }} />
         <Stack.Screen name="product/[id]" options={{ title: '' }} />
@@ -38,6 +30,6 @@ export default function RootLayout() {
         <Stack.Screen name="order/[id]" options={{ title: 'Order', headerRight: () => null }} />
         <Stack.Screen name="orders" options={{ title: 'My Orders', headerRight: () => <CartButton /> }} />
       </Stack>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
