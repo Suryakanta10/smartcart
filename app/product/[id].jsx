@@ -12,6 +12,7 @@ import { getFinalPrice, formatPrice } from '../../src/utils/price';
 
 import ImageGallery from '../../src/components/ImageGallery';
 import SimilarProducts from '../../src/components/SimilarProducts';
+import QuantityStepper from '../../src/components/QuantityStepper';
 import ErrorView from '../../src/components/ErrorView';
 
 export default function ProductDetailsScreen() {
@@ -27,11 +28,17 @@ export default function ProductDetailsScreen() {
     (state) => state.items.find((item) => item.id === productId)?.quantity ?? 0
   );
   const addItem = useCartStore((state) => state.addItem);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
 
   const isWishlisted = useIsWishlisted(productId);
   const toggleWishlist = useWishlistStore((state) => state.toggle);
 
   const openProduct = useCallback((otherId) => router.push(`/product/${otherId}`), [router]);
+
+  const changeQuantity = useCallback(
+    (quantity) => updateQuantity(productId, quantity),
+    [updateQuantity, productId]
+  );
 
   if (isLoading) {
     return (
@@ -49,19 +56,14 @@ export default function ProductDetailsScreen() {
   const hasDiscount = product.discountPercentage >= 1;
   const outOfStock = product.stock <= 0;
   const reachedLimit = quantityInCart >= product.stock;
-  const canAdd = !outOfStock && !reachedLimit;
 
   let stockLabel = 'In stock';
   if (outOfStock) stockLabel = 'Out of stock';
   else if (product.stock < 10) stockLabel = `Only ${product.stock} left`;
 
-  let buttonLabel = 'Add to cart';
-  if (outOfStock) buttonLabel = 'Out of stock';
-  else if (reachedLimit) buttonLabel = 'Max quantity in cart';
-
   return (
     <View style={styles.screen}>
-      <ScrollView contentContainerStyle={{ paddingBottom: 110 + insets.bottom }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 120 + insets.bottom }}>
         <ImageGallery images={product.images} />
 
         <View style={styles.body}>
@@ -100,8 +102,12 @@ export default function ProductDetailsScreen() {
           <Text style={styles.description}>{product.description}</Text>
 
           <View style={styles.infoBox}>
-            {product.shippingInformation ? <Text style={styles.info}>🚚 {product.shippingInformation}</Text> : null}
-            {product.warrantyInformation ? <Text style={styles.info}>🛡️ {product.warrantyInformation}</Text> : null}
+            {product.shippingInformation ? (
+              <Text style={styles.info}>🚚 {product.shippingInformation}</Text>
+            ) : null}
+            {product.warrantyInformation ? (
+              <Text style={styles.info}>🛡️ {product.warrantyInformation}</Text>
+            ) : null}
             {product.returnPolicy ? <Text style={styles.info}>↩️ {product.returnPolicy}</Text> : null}
           </View>
         </View>
@@ -110,19 +116,33 @@ export default function ProductDetailsScreen() {
       </ScrollView>
 
       <View style={[styles.bottomBar, { paddingBottom: 12 + insets.bottom }]}>
-        {quantityInCart > 0 && (
-          <Pressable onPress={() => router.push('/cart')} style={styles.inCart}>
-            <Text style={styles.inCartText}>In cart: {quantityInCart}</Text>
-            <Text style={styles.viewCart}>View cart ›</Text>
+        {quantityInCart > 0 ? (
+          <>
+            <View style={styles.cartRow}>
+              <QuantityStepper
+                quantity={quantityInCart}
+                max={product.stock}
+                onChange={changeQuantity}
+              />
+              <Pressable style={styles.goToCart} onPress={() => router.push('/cart')}>
+                <Text style={styles.goToCartText}>Go to cart</Text>
+                <Ionicons name="arrow-forward" size={18} color="#fff" />
+              </Pressable>
+            </View>
+            {reachedLimit && (
+              <Text style={styles.limitText}>Only {product.stock} available</Text>
+            )}
+          </>
+        ) : (
+          <Pressable
+            onPress={() => addItem(product)}
+            disabled={outOfStock}
+            style={[styles.addButton, outOfStock && styles.addButtonDisabled]}
+          >
+            <Ionicons name="cart-outline" size={20} color="#fff" />
+            <Text style={styles.addButtonText}>{outOfStock ? 'Out of stock' : 'Add to cart'}</Text>
           </Pressable>
         )}
-        <Pressable
-          onPress={() => addItem(product)}
-          disabled={!canAdd}
-          style={[styles.addButton, !canAdd && styles.addButtonDisabled]}
-        >
-          <Text style={styles.addButtonText}>{buttonLabel}</Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -131,22 +151,27 @@ export default function ProductDetailsScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#f6f6f6' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+
   body: { backgroundColor: '#fff', padding: 16, marginBottom: 12 },
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 },
   title: { flex: 1, fontSize: 20, fontWeight: '700', color: '#111' },
   brand: { fontSize: 14, color: '#666', marginTop: 4 },
   rating: { fontSize: 14, color: '#f59e0b', marginTop: 8 },
+
   priceRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
   price: { fontSize: 24, fontWeight: '800', color: '#111' },
   oldPrice: { fontSize: 15, color: '#999', textDecorationLine: 'line-through' },
   badge: { backgroundColor: '#dcfce7', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   badgeText: { color: '#15803d', fontSize: 12, fontWeight: '700' },
+
   stock: { marginTop: 8, fontSize: 14, color: '#15803d', fontWeight: '600' },
   stockLow: { color: '#d97706' },
+
   sectionTitle: { fontSize: 16, fontWeight: '700', marginTop: 20, marginBottom: 6, color: '#111' },
   description: { fontSize: 14, lineHeight: 21, color: '#444' },
   infoBox: { marginTop: 16, gap: 6 },
   info: { fontSize: 13, color: '#555' },
+
   bottomBar: {
     position: 'absolute',
     left: 0,
@@ -158,10 +183,29 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
-  inCart: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  inCartText: { fontSize: 13, color: '#444' },
-  viewCart: { fontSize: 13, fontWeight: '700', color: '#111' },
-  addButton: { backgroundColor: '#111', paddingVertical: 14, borderRadius: 10, alignItems: 'center' },
+  cartRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  goToCart: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#111',
+    height: 46,
+    borderRadius: 10,
+  },
+  goToCartText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  limitText: { fontSize: 12, color: '#d97706', marginTop: 6, textAlign: 'center' },
+
+  addButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#111',
+    height: 50,
+    borderRadius: 10,
+  },
   addButtonDisabled: { backgroundColor: '#aaa' },
   addButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });

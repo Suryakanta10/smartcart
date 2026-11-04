@@ -20,11 +20,11 @@ export default function CartButton() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { paddingHorizontal: 4 },
+  wrapper: { padding: 6, marginRight: 4 },
   badge: {
     position: 'absolute',
-    top: -4,
-    right: -6,
+    top: 0,
+    right: 0,
     minWidth: 18,
     height: 18,
     borderRadius: 9,
@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,
+    borderWidth: 1.5,
+    borderColor: '#fff',
   },
-  badgeText: { color: '#fff', fontSize: 11, fontWeight: '700' },
+  badgeText: { color: '#fff', fontSize: 10, fontWeight: '700' },
 });
