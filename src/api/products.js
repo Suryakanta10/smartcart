@@ -2,16 +2,36 @@ import { request, toQuery } from "./client";
 
 export const PAGE_SIZE = 20;
 
-const FIELDS =
-  "id,title,description,price,discountPercentage,rating,stock,category,tags,thumbnail,images";
+const LIST_FIELDS =
+  "id,title,price,discountPercentage,rating,stock,thumbnail,category,brand,tags,availabilityStatus";
 
-export function getProducts({ skip = 0, sortBy, order, signal } = {}) {
-  const query = toQuery({
+export function fetchProductPage({
+  skip = 0,
+  query,
+  category,
+  sortBy,
+  order,
+  signal,
+} = {}) {
+  let path = "/products";
+  if (query) {
+    path = "/products/search";
+  } else if (category) {
+    path = `/products/category/${encodeURIComponent(category)}`;
+  }
+
+  const qs = toQuery({
+    q: query || undefined,
     limit: PAGE_SIZE,
     skip,
-    select: FIELDS,
+    select: LIST_FIELDS,
     sortBy,
     order,
   });
-  return request(`/products?${query}`, signal);
+
+  return request(`${path}?${qs}`, signal);
+}
+
+export function fetchCategories(signal) {
+  return request("/products/categories", signal);
 }
