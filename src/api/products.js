@@ -35,3 +35,15 @@ export function fetchProductPage({
 export function fetchCategories(signal) {
   return request("/products/categories", signal);
 }
+
+export function fetchProductById(id, signal) {
+  return request(`/products/${id}`, signal);
+}
+
+export function fetchProductsByCategory(category, signal) {
+  const qs = toQuery({ limit: 0, select: LIST_FIELDS });
+  return request(
+    `/products/category/${encodeURIComponent(category)}?${qs}`,
+    signal,
+  );
+}
