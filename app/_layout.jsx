@@ -1,7 +1,12 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import HeaderActions from '../src/components/HeaderActions';
 import CartButton from '../src/components/CartButton';
+import { configureNotifications } from '../src/services/notifications';
+import { startCartReminderSync } from '../src/services/cartReminderSync';
+import { useNotificationObserver } from '../src/hooks/useNotificationObserver';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,7 +17,16 @@ const queryClient = new QueryClient({
   },
 });
 
+configureNotifications();
+
 export default function RootLayout() {
+  useNotificationObserver();
+
+  useEffect(() => {
+    const stopSync = startCartReminderSync();
+    return stopSync;
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Stack screenOptions={{ headerRight: () => <HeaderActions /> }}>
