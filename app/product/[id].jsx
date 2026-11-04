@@ -15,11 +15,15 @@ import SimilarProducts from '../../src/components/SimilarProducts';
 import QuantityStepper from '../../src/components/QuantityStepper';
 import ErrorView from '../../src/components/ErrorView';
 
+import { useIsOffline } from '../../src/hooks/useIsOffline';
+import OfflineBanner from '../../src/components/OfflineBanner';
+
 export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams();
   const productId = Number(id);
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const isOffline = useIsOffline();
 
   const { data: product, isLoading, isError, refetch } = useProduct(productId);
   const { data: similar } = useSimilarProducts(product);
@@ -40,17 +44,26 @@ export default function ProductDetailsScreen() {
     [updateQuantity, productId]
   );
 
-  if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+if (isLoading) {
+  return (
+    <View style={styles.center}>
+      <ActivityIndicator size="large" />
+    </View>
+  );
+}
 
-  if (isError || !product) {
-    return <ErrorView message="Couldn't load this product." onRetry={refetch} />;
-  }
+if (isError || !product) {
+  return (
+    <ErrorView
+      message={
+        isOffline
+          ? "You're offline. This product hasn't been saved yet. Connect to the internet to view it."
+          : "Couldn't load this product."
+      }
+      onRetry={refetch}
+    />
+  );
+}
 
   const finalPrice = getFinalPrice(product.price, product.discountPercentage);
   const hasDiscount = product.discountPercentage >= 1;
@@ -64,6 +77,7 @@ export default function ProductDetailsScreen() {
   return (
     <View style={styles.screen}>
       <ScrollView contentContainerStyle={{ paddingBottom: 120 + insets.bottom }}>
+        <OfflineBanner />
         <ImageGallery images={product.images} />
 
         <View style={styles.body}>
