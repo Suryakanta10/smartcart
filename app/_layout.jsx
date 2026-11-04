@@ -21,6 +21,8 @@ export default function RootLayout() {
         <Stack.Screen name="cart" options={{ title: 'My Cart', headerRight: () => null }} />
         <Stack.Screen name="wishlist" options={{ title: 'Wishlist', headerRight: () => <CartButton /> }} />
         <Stack.Screen name="checkout" options={{ title: 'Checkout', headerRight: () => null }} />
+        <Stack.Screen name="order/[id]" options={{ title: 'Order', headerRight: () => null }} />
+        <Stack.Screen name="orders" options={{ title: 'My Orders', headerRight: () => <CartButton /> }} />
       </Stack>
     </QueryClientProvider>
   );

@@ -8,6 +8,9 @@ export default function HeaderActions() {
 
   return (
     <View style={styles.row}>
+      <Pressable onPress={() => router.push('/orders')} hitSlop={8} style={styles.icon}>
+        <Ionicons name="receipt-outline" size={22} color="#111" />
+      </Pressable>
       <Pressable onPress={() => router.push('/wishlist')} hitSlop={8} style={styles.icon}>
         <Ionicons name="heart-outline" size={24} color="#111" />
       </Pressable>
@@ -18,5 +21,5 @@ export default function HeaderActions() {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
-  icon: { padding: 6, marginRight: 4 },
+  icon: { padding: 6, marginRight: 2 },
 });
