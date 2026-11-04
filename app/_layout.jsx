@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import HeaderActions from '../src/components/HeaderActions';
 import CartButton from '../src/components/CartButton';
 
 const queryClient = new QueryClient({
@@ -14,11 +15,13 @@ const queryClient = new QueryClient({
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-   <Stack screenOptions={{ headerRight: () => <CartButton /> }}>
-  <Stack.Screen name="index" options={{ title: 'SmartCart' }} />
-  <Stack.Screen name="product/[id]" options={{ title: '' }} />
-  <Stack.Screen name="cart" options={{ title: 'Cart', headerRight: () => null }} />
-</Stack>
+      <Stack screenOptions={{ headerRight: () => <HeaderActions /> }}>
+        <Stack.Screen name="index" options={{ title: 'SmartCart' }} />
+        <Stack.Screen name="product/[id]" options={{ title: '' }} />
+        <Stack.Screen name="cart" options={{ title: 'My Cart', headerRight: () => null }} />
+        <Stack.Screen name="wishlist" options={{ title: 'Wishlist', headerRight: () => <CartButton /> }} />
+        <Stack.Screen name="checkout" options={{ title: 'Checkout', headerRight: () => null }} />
+      </Stack>
     </QueryClientProvider>
   );
 }
