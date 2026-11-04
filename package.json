@@ -15,6 +15,8 @@
     "expo-notifications": "~58.1.8",
     "expo-router": "~58.0.30",
     "expo-status-bar": "~58.0.4",
+    "jest": "~30.5.2",
+    "jest-expo": "~58.0.14",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.1",
@@ -23,11 +25,18 @@
     "react-native-web": "^0.21.4",
     "zustand": "^5.0.16"
   },
+  "jest": {
+  "preset": "jest-expo"
+},
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@testing-library/react-native": "^14.1.0"
+  }
 }
