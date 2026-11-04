@@ -1,14 +1,21 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getProducts } from "../api/products";
+import { useInfiniteQuery, keepPreviousData } from "@tanstack/react-query";
+import { fetchProductPage } from "../api/products";
 
-export function useProducts(sort = {}) {
+export function useProducts({
+  query = "",
+  category = null,
+  sortBy,
+  order,
+} = {}) {
   return useInfiniteQuery({
-    queryKey: ["products", sort],
+    queryKey: ["products", { query, category, sortBy, order }],
     queryFn: ({ pageParam, signal }) =>
-      getProducts({
+      fetchProductPage({
         skip: pageParam,
-        sortBy: sort.sortBy,
-        order: sort.order,
+        query,
+        category,
+        sortBy,
+        order,
         signal,
       }),
     initialPageParam: 0,
@@ -16,5 +23,6 @@ export function useProducts(sort = {}) {
       const nextSkip = lastPage.skip + lastPage.limit;
       return nextSkip < lastPage.total ? nextSkip : undefined;
     },
+    placeholderData: keepPreviousData,
   });
 }
