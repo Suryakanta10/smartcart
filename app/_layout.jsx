@@ -13,7 +13,10 @@ const queryClient = new QueryClient({
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack />
+    <Stack>
+       <Stack.Screen name="index" options={{ title: 'SmartCart' }} />
+       <Stack.Screen name="product/[id]" options={{ title: 'Product' }} />
+    </Stack>
     </QueryClientProvider>
   );
 }
