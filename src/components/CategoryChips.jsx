@@ -10,6 +10,7 @@ function CategoryChips({ categories = [], selected, onSelect }) {
       data={data}
       keyExtractor={(item) => item.slug ?? 'all'}
       showsHorizontalScrollIndicator={false}
+      style={styles.list}
       contentContainerStyle={styles.container}
       renderItem={({ item }) => {
         const active = item.slug === selected;
@@ -29,7 +30,8 @@ function CategoryChips({ categories = [], selected, onSelect }) {
 export default memo(CategoryChips);
 
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: 12, paddingVertical: 10, gap: 8 },
+  list: { flexGrow: 0, flexShrink: 0 },
+  container: { paddingHorizontal: 12, paddingVertical: 10, gap: 8, alignItems: 'center' },
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 7,

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -23,6 +24,7 @@ import CategoryChips from '../src/components/CategoryChips';
 import FilterModal from '../src/components/FilterModal';
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
 
   const [search, setSearch] = useState('');
@@ -131,7 +133,7 @@ export default function HomeScreen() {
         ListEmptyComponent={
           !isFetching ? <Text style={styles.empty}>No products match your search</Text> : null
         }
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 24 }]}
         initialNumToRender={8}
         maxToRenderPerBatch={8}
         windowSize={7}
