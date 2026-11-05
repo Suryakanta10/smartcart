@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/netinfo": "12.0.1",
     "@tanstack/query-async-storage-persister": "^5.105.3",
@@ -26,8 +27,8 @@
     "zustand": "^5.0.16"
   },
   "jest": {
-  "preset": "jest-expo"
-},
+    "preset": "jest-expo"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",

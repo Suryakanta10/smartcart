@@ -1,5 +1,7 @@
 import { useInfiniteQuery, keepPreviousData } from "@tanstack/react-query";
 import { fetchProductPage } from "../api/products";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProductById } from "../api/products";
 
 export function useProducts({
   query = "",
