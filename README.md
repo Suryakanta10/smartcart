@@ -15,15 +15,15 @@ abandoned-cart reminders, offline support and tests.
 
 | Home | Search & Filters | Product Details | Similar Products |
 |---|---|---|---|
-| ![](docs/screenshots/01-home.png) | ![](docs/screenshots/02-search-filter.png) | ![](docs/screenshots/03-details.png) | ![](docs/screenshots/04-similar.png) |
+| ![](docs/Screenshots/home.jpeg) | ![](docs/Screenshots/search-filter.jpeg) | ![](docs/Screenshots/details.jpeg) | ![](docs/Screenshots/similar.jpeg) |
 
 | Cart | Wishlist | Checkout Validation | Order Confirmed |
 |---|---|---|---|
-| ![](docs/screenshots/05-cart.png) | ![](docs/screenshots/06-wishlist.png) | ![](docs/screenshots/07-checkout-errors.png) | ![](docs/screenshots/08-order-confirmed.png) |
+| ![](docs/Screenshots/cart.jpeg) | ![](docs/Screenshots/wishlist.jpeg) | ![](docs/Screenshots/checkout-errors.jpeg) | ![](docs/Screenshots/order-confirmed.jpeg) |
 
 | Order History | Offline Mode | Empty Cart | Cart Reminder |
 |---|---|---|---|
-| ![](docs/screenshots/09-orders.png) | ![](docs/screenshots/10-offline.png) | ![](docs/screenshots/11-empty-cart.png) | ![](docs/screenshots/12-notification.png) |
+| ![](docs/Screenshots/orders.jpeg) | ![](docs/Screenshots/offline.jpeg) | ![](docs/Screenshots/empty-cart.jpeg) | ![](docs/Screenshots/notification.jpeg) |
 
 ---
 
@@ -257,6 +257,8 @@ Coverage report:
 ```bash
 npx jest --coverage
 ```
+
+![Coverage](docs/coverage.png)
 
 ---
 
